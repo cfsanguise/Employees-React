@@ -14,16 +14,16 @@ function App() {
     {name: 'Vitalya Golodniy', salary: 100, increase: true, rise: false, id: uuidv4()},
     {name: 'Lob Michalich', salary: 555, increase: false, rise: false, id: uuidv4()},],
     term: '',
-    filter: ''
+    filter: 'all'
   });
   const {employees, term, filter} = data;
 
   const addEmployee = (name, salary) => {
-    setData(({employees}) => ({employees: employees.concat([{name, salary, increase: false, rise: false, id: uuidv4()}])}))
+    setData((state) => ({...state, employees: employees.concat([{name, salary, increase: false, rise: false, id: uuidv4()}])}))
   }
 
   const deleteEmployee = id => {
-    setData(({employees}) => ({employees: employees.filter(employee => employee.id !== id)}))
+    setData((state) => ({...state, employees: employees.filter(employee => employee.id !== id)}))
   }
 
   const onToggleProp = (id, prop) => {
@@ -55,7 +55,24 @@ function App() {
     setData(state => ({...state, filter: text}));
   }
 
-  let visibleData = searchEmployee(employees, term);
+  const filterEmployees = (items, filter) => {
+    const filtered = items.filter(item => {
+      switch (filter) {
+        case 'all': 
+          return items
+        case 'rise':
+          return item.increase === true
+        case 'bigSalary':
+          return item.salary > 1000
+        default: return items
+      }
+    })
+    console.log(items);
+    return filtered
+  }
+
+  let visibleData = filterEmployees(searchEmployee(employees, term), filter);
+
 
   return (
     <div className="app">
